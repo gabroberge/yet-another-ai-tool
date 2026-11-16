@@ -1,0 +1,45 @@
+{
+  "name": "yet-another-ai-tool",
+  "description": "Satirical AI-native product factory. Compiles a working utility into a category, an architecture, and a price. The substrate stays frozen.",
+  "type": "module",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabroberge/yet-another-ai-tool.git"
+  },
+  "homepage": "https://gabroberge.github.io/yet-another-ai-tool/",
+  "bugs": {
+    "url": "https://github.com/gabroberge/yet-another-ai-tool/issues"
+  },
+  "keywords": [
+    "astro",
+    "ai",
+    "enterprise",
+    "satire",
+    "static-site"
+  ],
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.12",
+    "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^26.6.6",
+    "typescript": "6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
