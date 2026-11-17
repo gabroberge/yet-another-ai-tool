@@ -1,0 +1,90 @@
+---
+import App from "../../layouts/App.astro";
+import { icon } from "../../lib/ui/icons";
+import { ROUTES } from "../../lib/ui/paths";
+---
+
+<App title="Telemetry" current="telemetry">
+  <div data-telemetry class="mx-auto max-w-[1440px] px-4 pb-20 lg:px-6">
+    <div class="pt-8 pb-6">
+      <h1 class="text-[clamp(2rem,3.4vw,3rem)] leading-none font-black tracking-[-0.02em] wide">Telemetry</h1>
+      <p class="mt-3 text-ink-2" data-subtitle></p>
+    </div>
+    <div data-content></div>
+    <div data-empty hidden class="mt-2 grid place-items-center border border-dashed border-ink/40 px-6 py-20 text-center">
+      <h2 class="text-2xl font-extrabold semiwide">No signal yet.</h2>
+      <p class="mt-2 max-w-[44ch] text-ink-2">Telemetry starts with your first company.</p>
+      <a href={`${ROUTES.factory}?new=1`} class="mt-6 inline-flex h-11 items-center gap-2 bg-ultra px-5 font-bold text-white no-underline hover:bg-ultra-deep">
+        <Fragment set:html={icon("carton", "size-5")} />Manufacture a company
+      </a>
+    </div>
+  </div>
+</App>
+
+<script>
+  import { portfolioTelemetry } from "../../lib/domain/telemetry";
+  import { getPortfolio, subscribe } from "../../lib/persistence/store";
+  import { kindMix, latencyDumbbells, stageLadder, valuationBars } from "../../lib/ui/charts";
+  import { esc } from "../../lib/ui/html";
+  import { icon } from "../../lib/ui/icons";
+  import { ventureUrl } from "../../lib/ui/paths";
+  import { integer, money, plural, relativeTime } from "../../lib/format";
+
+  const root = document.querySelector<HTMLElement>("[data-telemetry]")!;
+  const content = root.querySelector<HTMLElement>("[data-content]")!;
+  const empty = root.querySelector<HTMLElement>("[data-empty]")!;
+  const subtitle = root.querySelector<HTMLElement>("[data-subtitle]")!;
+
+  const panel = (title: string, body: string, extra = "") =>
+    `<section class="bg-paper p-5 ${extra}"><h2 class="mb-5 text-base font-extrabold semiwide">${esc(title)}</h2>${body}</section>`;
+
+  function render() {
+    const t = portfolioTelemetry(getPortfolio());
+    empty.hidden = t.ventures > 0;
+    if (!t.ventures) {
+      content.innerHTML = "";
+      subtitle.textContent = "";
+      return;
+    }
+    subtitle.textContent = `Across ${plural(t.ventures, "company", "companies")} built on ${plural(t.technologies, "technology", "technologies")}.`;
+    const figure = (label: string, value: string) =>
+      `<div class="px-4 py-3"><dt class="text-xs text-ink-2">${esc(label)}</dt><dd class="mt-1 text-2xl font-black tabular semiwide">${esc(value)}</dd></div>`;
+    const feed = t.events
+      .slice(0, 18)
+      .map(
+        (e) => `<li class="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-b border-rule py-2.5 text-sm">
+        <span><a href="${ventureUrl(e.ventureId)}" class="font-bold text-ink no-underline hover:text-ultra">${esc(e.ventureName)}</a> <span class="${e.kind === "stage" ? "font-semibold" : "text-ink-2"}">${esc(e.text)}</span></span>
+        <time class="text-xs text-ink-2 tabular" datetime="${new Date(e.at).toISOString()}">${esc(relativeTime(e.at))}</time>
+      </li>`,
+      )
+      .join("");
+
+    content.innerHTML = `
+      <dl class="grid grid-cols-2 divide-rule border-y border-ink bg-paper sm:grid-cols-3 lg:grid-cols-6 lg:divide-x">
+        ${figure("Combined valuation", money(t.totalValuation))}
+        ${figure("Agents deployed", integer(t.agents))}
+        ${figure("Modules installed", integer(t.modules))}
+        ${figure("Claims printed", integer(t.claims))}
+        ${figure("Average YIQ", String(t.avgYiq))}
+        ${figure("Foundation changes", String(t.foundationsModified))}
+      </dl>
+      <div class="mt-6 grid gap-6 lg:grid-cols-2">
+        ${panel("Valuation by company", valuationBars(t))}
+        ${panel("Stage distribution", stageLadder(t))}
+        ${panel("Request latency", latencyDumbbells(t))}
+        ${panel("Technology mix", kindMix(t))}
+      </div>
+      <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        ${panel("Activity", `<ol class="border-t border-rule">${feed}</ol>`)}
+        ${panel(
+          "Categories",
+          `<ul class="space-y-2 text-sm">${t.categories.map((c) => `<li class="flex items-start gap-2">${icon("sparkle", "mt-0.5 size-3.5 shrink-0 text-ultra")}${esc(c)}</li>`).join("")}</ul>
+          <p class="mt-6 border-t border-rule pt-4 text-sm text-ink-2">${integer(t.wrapperLoc)} lines of platform code across the portfolio.</p>`,
+          "self-start",
+        )}
+      </div>`;
+  }
+
+  subscribe(render);
+  render();
+</script>

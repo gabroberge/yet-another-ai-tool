@@ -1,0 +1,46 @@
+---
+import { icon, type IconName } from "../../lib/ui/icons";
+
+const SEALS: { id: string; ring: string; title: string; body: string; glyph: IconName }[] = [
+  { id: "migration", ring: "ZERO MIGRATION · CERTIFIED · ", title: "Zero migration", body: "Your foundation is never modified. Every layer is additive and removable.", glyph: "layers" },
+  { id: "governance", ring: "AGENT GOVERNANCE · ATTESTED · ", title: "Agent governance", body: "Every agent action passes policy, with a full audit trail.", glyph: "lock" },
+  { id: "explain", ring: "EXPLAINABILITY · VERIFIED · ", title: "Explainability", body: "Each decision carries a rationale a reviewer can read.", glyph: "doc" },
+  { id: "human", ring: "HUMAN REVIEW · READY · ", title: "Human in the loop", body: "Low-confidence results route to a person before they ship.", glyph: "check" },
+];
+---
+
+<section id="trust" aria-labelledby="trust-title" class="scroll-mt-16 py-20 lg:py-28">
+  <div class="mx-auto max-w-[1320px] px-5 lg:px-8">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+      <h2 id="trust-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">Trust, printed on every box.</h2>
+      <p class="max-w-[52ch] text-lg leading-snug text-ink-2 lg:justify-self-end">
+        Each company ships with its own Trust Center: subprocessors, data flow, policies, and the controls below, written before anyone asks.
+      </p>
+    </div>
+    <ul class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        SEALS.map((s, i) => (
+          <li class="flex flex-col items-start gap-5">
+            <svg viewBox="0 0 120 120" class="size-28" role="img" aria-label={`${s.title} seal`}>
+              <defs>
+                <path id={`ring-${s.id}`} d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1 -88 0" />
+              </defs>
+              <circle cx="60" cy="60" r="58" fill={i % 2 ? "#ffd23f" : "#3a2bff"} />
+              <circle cx="60" cy="60" r="34" fill="none" stroke={i % 2 ? "#121318" : "#fff"} stroke-width="1.5" />
+              <text font-size="10" font-weight="800" fill={i % 2 ? "#121318" : "#fff"} font-family="var(--font-sans)">
+                <textPath href={`#ring-${s.id}`} textLength="274" lengthAdjust="spacing">{s.ring}</textPath>
+              </text>
+              <g class={i % 2 ? "text-ink" : "text-white"}>
+                <Fragment set:html={icon(s.glyph, "", 'x="44" y="44" width="32" height="32"')} />
+              </g>
+            </svg>
+            <div>
+              <h3 class="text-lg font-extrabold semiwide">{s.title}</h3>
+              <p class="mt-1.5 max-w-[32ch] text-ink-2">{s.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

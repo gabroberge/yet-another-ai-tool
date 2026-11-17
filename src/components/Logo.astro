@@ -1,0 +1,18 @@
+---
+interface Props {
+  class?: string;
+  href?: string;
+}
+const { class: className = "", href } = Astro.props;
+const Tag = href ? "a" : "span";
+---
+
+<Tag href={href} class:list={["inline-flex items-center gap-2 text-ink no-underline", className]} aria-label={href ? "YAAT home" : undefined}>
+  <svg viewBox="0 0 32 32" class="size-7 shrink-0" aria-hidden="true">
+    <path fill="#3a2bff" d="M3 9h20v20H3z"></path>
+    <path fill="#1f14b8" d="M23 9l6-6v20l-6 6z"></path>
+    <path fill="#7b70ff" d="M3 9l6-6h20l-6 6z"></path>
+    <path fill="#ffd23f" d="M8 15h10v3H8zM8 20h6v3H8z"></path>
+  </svg>
+  <span class="text-xl leading-none font-black tracking-tight wide">YAAT<sup class="ml-px align-super text-[0.5em] font-bold">™</sup></span>
+</Tag>

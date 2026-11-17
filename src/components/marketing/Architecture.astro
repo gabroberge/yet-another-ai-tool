@@ -1,0 +1,77 @@
+---
+import { TIER_LABELS } from "../../lib/domain/view";
+import { showcase } from "../../lib/generation/showcase";
+import { latency, microCost, integer } from "../../lib/format";
+
+const view = showcase("text-diff", 17, [
+  "agent", "agent", "agent", "orchestrator", "reasoning", "confidence", "hitl", "governance", "compliance", "category", "score", "enterprise", "dashboard",
+]);
+const above = view.layers.filter((l) => l.tier !== "foundation");
+const foundation = view.layers.find((l) => l.tier === "foundation")!;
+const wrapperMs = view.latencyMs - foundation.latencyMs;
+---
+
+<section aria-labelledby="arch-title" class="py-20 lg:py-28">
+  <div class="mx-auto grid max-w-[1320px] gap-12 px-5 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-8">
+    <div class="lg:sticky lg:top-10 lg:self-start">
+      <h2 id="arch-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">
+        Your technology stays exactly where it is.
+      </h2>
+      <p class="mt-6 max-w-[46ch] text-lg leading-snug text-ink-2">
+        YAAT builds every layer above it. Nothing under the foundation line is modified, so there is nothing to migrate, re-test, or re-certify.
+      </p>
+      <dl class="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-ink pt-6">
+        <div>
+          <dt class="text-sm text-ink-2">Layers added</dt>
+          <dd class="mt-1 text-4xl font-black tabular semiwide">{above.length}</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-ink-2">Foundation changes</dt>
+          <dd class="mt-1 text-4xl font-black tabular semiwide">0</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-ink-2">Platform code</dt>
+          <dd class="mt-1 text-4xl font-black tabular semiwide">{integer(view.loc)}<span class="ml-1 text-base font-bold text-ink-2">lines</span></dd>
+        </div>
+        <div>
+          <dt class="text-sm text-ink-2">Reasoning time</dt>
+          <dd class="mt-1 text-4xl font-black tabular semiwide">{latency(wrapperMs)}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <figure>
+      <figcaption class="mb-4 flex items-baseline justify-between gap-4 text-sm">
+        <span class="font-bold">{view.identity.name} reference architecture</span>
+        <span class="text-ink-2 tabular">{latency(view.latencyMs)} end to end</span>
+      </figcaption>
+      <ol class="grid gap-1.5">
+        {
+          above.map((l) => (
+            <li class="grid grid-cols-[6.5rem_minmax(0,1fr)_auto] items-center gap-4 bg-paper py-2.5 pr-4 pl-3 sm:grid-cols-[7.5rem_minmax(0,1fr)_7rem_6rem]">
+              <span class="narrow text-xs font-bold text-ink-2">{TIER_LABELS[l.tier]}</span>
+              <span class="min-w-0">
+                <span class="block truncate text-sm font-bold">{l.name}</span>
+                <span class="block truncate text-xs text-ink-2">{l.detail}</span>
+              </span>
+              <span class="text-right text-xs tabular text-ink-2">+{latency(l.latencyMs)}</span>
+              <span class="hidden text-right text-xs tabular text-ink-2 sm:block">+{microCost(l.costPerCall)}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="relative my-4 border-t-2 border-dashed border-die" role="separator" aria-label="Foundation line">
+        <span class="absolute top-0 right-0 -translate-y-1/2 bg-board pl-2 text-xs font-bold text-die">Foundation line</span>
+      </div>
+      <div class="grid grid-cols-[6.5rem_minmax(0,1fr)_auto] items-center gap-4 bg-ink py-4 pr-4 pl-3 text-white sm:grid-cols-[7.5rem_minmax(0,1fr)_7rem_6rem]">
+        <span class="narrow text-xs font-bold text-white/70">Foundation</span>
+        <span class="min-w-0">
+          <span class="block text-sm font-bold">{foundation.name}</span>
+          <span class="block text-xs text-white/70">Unmodified since {view.substrate.firstReleased}</span>
+        </span>
+        <span class="text-right text-xs tabular text-white/70">{latency(foundation.latencyMs)}</span>
+        <span class="hidden text-right text-xs tabular text-white/70 sm:block">{microCost(foundation.costPerCall)}</span>
+      </div>
+    </figure>
+  </div>
+</section>

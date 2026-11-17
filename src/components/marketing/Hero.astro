@@ -1,0 +1,208 @@
+---
+import { requireSubstrate } from "../../lib/domain/substrates";
+import { describeVenture } from "../../lib/domain/view";
+import { buildVenture } from "../../lib/generation/showcase";
+import { packagingRun } from "../../lib/generation/presets";
+import { renderCarton } from "../../lib/ui/carton";
+import { renderContents, renderShelfLabel } from "../../lib/ui/labels";
+import { icon } from "../../lib/ui/icons";
+import { ROUTES } from "../../lib/ui/paths";
+
+const CHIPS = [
+  { id: "weather-api", label: "Weather API" },
+  { id: "levenshtein", label: "Levenshtein distance" },
+  { id: "cron", label: "Cron" },
+  { id: "static-analyzer", label: "Linter" },
+  { id: "csv-parser", label: "CSV parser" },
+  { id: "email-api", label: "Email API" },
+  { id: "regex-redaction", label: "Redaction regex" },
+  { id: "image-resizer", label: "Image resizer" },
+];
+
+const initial = { substrateId: "weather-api", seed: 14 };
+const view = describeVenture(buildVenture(initial.substrateId, initial.seed, packagingRun(initial.seed)));
+const substrate = requireSubstrate(initial.substrateId);
+---
+
+<section aria-labelledby="hero-title" data-hero data-substrate={initial.substrateId} data-seed={initial.seed}>
+  <div class="mx-auto grid max-w-[1320px] gap-y-8 px-5 pt-8 pb-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.55fr)_minmax(0,1.3fr)] lg:grid-rows-[auto_1fr] lg:px-8 lg:pt-12">
+    <!-- Top flap: the primary action -->
+    <form
+      data-hero-form
+      class="order-2 bg-paper px-5 pt-6 pb-5 [clip-path:polygon(3%_0,97%_0,100%_100%,0_100%)] lg:order-none lg:col-start-2 lg:row-start-1 lg:border-b lg:border-dashed lg:border-die lg:px-8"
+    >
+      <fieldset>
+        <legend class="mb-3 text-sm font-bold">Choose a technology</legend>
+        <div class="flex flex-wrap gap-1.5" role="group">
+          {
+            CHIPS.map((c) => (
+              <button
+                type="button"
+                data-chip={c.id}
+                aria-pressed={c.id === initial.substrateId ? "true" : "false"}
+                class="h-8 border border-ink/20 px-2.5 text-[13px] font-medium transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+              >
+                {c.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <button
+          type="submit"
+          class="inline-flex h-12 items-center gap-2 bg-ultra px-6 text-base font-extrabold text-white semiwide transition-colors hover:bg-ultra-deep disabled:opacity-60"
+          data-manufacture
+        >
+          <Fragment set:html={icon("carton", "size-5")} />
+          Manufacture
+        </button>
+        <p class="min-w-0 flex-1 basis-48 truncate text-sm text-ink-2" data-hero-status aria-live="polite">Ready for market.</p>
+      </div>
+    </form>
+
+    <!-- Side panel: the contents -->
+    <div class="order-4 lg:order-none lg:col-start-1 lg:row-start-2 lg:border-r lg:border-dashed lg:border-die" data-hero-contents>
+      <Fragment set:html={renderContents(substrate, { className: "h-full" })} />
+    </div>
+
+    <!-- Front panel -->
+    <div class="order-1 flex flex-col justify-between gap-10 bg-ultra p-7 text-white lg:order-none lg:col-start-2 lg:row-start-2 lg:p-10">
+      <div>
+        <h1 id="hero-title" class="text-[clamp(2.6rem,4.6vw,4.4rem)] leading-[0.92] font-black tracking-[-0.03em] wide">
+          Every capability deserves a company.
+        </h1>
+        <p class="mt-6 max-w-[46ch] text-lg leading-snug text-white/85">
+          YAAT manufactures AI-native companies from the technology you already run: brand, agents, governance, pricing, and a valuation. No migration required.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+        <a
+          href={ROUTES.factory}
+          class="inline-flex h-11 items-center gap-2 bg-white px-5 font-bold text-ultra no-underline transition-colors hover:bg-seal hover:text-ink"
+          >Open the Factory</a
+        >
+        <a href="#line" class="font-semibold text-white underline decoration-white/40 hover:decoration-white">See how it works</a>
+      </div>
+    </div>
+
+    <!-- The shelf -->
+    <div class="order-3 flex flex-col lg:order-none lg:col-start-3 lg:row-span-2 lg:row-start-1 lg:pl-10">
+      <div class="relative flex min-h-[460px] flex-1 items-end justify-center px-4 lg:min-h-0">
+        <div data-hero-carton data-claims={view.claims.map((c) => c.id).join("|")} class="flex items-end justify-center">
+          <Fragment set:html={renderCarton(view, { size: "hero" })} />
+        </div>
+      </div>
+      <div class="relative h-4 bg-ink" aria-hidden="true"></div>
+      <div class="flex flex-col gap-3 bg-[#d9dce3] px-4 pt-3 pb-4">
+        <div data-hero-label class="w-full max-w-[340px]">
+          <Fragment set:html={renderShelfLabel(view)} />
+        </div>
+        <a
+          href={ROUTES.factory}
+          data-hero-open
+          class="inline-flex h-10 items-center gap-2 self-start bg-ink px-4 text-sm font-bold whitespace-nowrap text-white no-underline transition-colors hover:bg-ultra"
+        >
+          Open in Factory
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { describeVenture } from "../../lib/domain/view";
+  import { requireSubstrate } from "../../lib/domain/substrates";
+  import { buildVenture } from "../../lib/generation/showcase";
+  import { packagingRun } from "../../lib/generation/presets";
+  import { randomSeed } from "../../lib/generation/rng";
+  import { createVenture, installEnhancement, canInstall, findVenture } from "../../lib/domain/portfolio";
+  import { commit } from "../../lib/persistence/store";
+  import { renderContents } from "../../lib/ui/labels";
+  import { updateCarton, updateShelfLabel } from "../../lib/ui/carton-dom";
+  import { wait } from "../../lib/ui/motion";
+  import { ventureUrl } from "../../lib/ui/paths";
+
+  const root = document.querySelector<HTMLElement>("[data-hero]")!;
+  const form = root.querySelector<HTMLFormElement>("[data-hero-form]")!;
+  const carton = root.querySelector<HTMLElement>("[data-hero-carton]")!;
+  const label = root.querySelector<HTMLElement>("[data-hero-label]")!;
+  const contents = root.querySelector<HTMLElement>("[data-hero-contents]")!;
+  const status = root.querySelector<HTMLElement>("[data-hero-status]")!;
+  const open = root.querySelector<HTMLAnchorElement>("[data-hero-open]")!;
+  const button = root.querySelector<HTMLButtonElement>("[data-manufacture]")!;
+
+  let substrateId = root.dataset.substrate!;
+  let seed = Number(root.dataset.seed);
+  let installed: string[] = packagingRun(seed);
+  let token = 0;
+
+  function show(assemble = false) {
+    const view = describeVenture(buildVenture(substrateId, seed, installed, Date.now()));
+    updateCarton(carton, view, { size: "hero" }, assemble);
+    updateShelfLabel(label, view);
+    return view;
+  }
+
+  function select(id: string) {
+    token++;
+    substrateId = id;
+    seed = randomSeed();
+    installed = [];
+    root.querySelectorAll<HTMLButtonElement>("[data-chip]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.chip === id)));
+    contents.innerHTML = renderContents(requireSubstrate(id), { className: "h-full" });
+    const view = show(true);
+    status.textContent = `${view.identity.name} is ready to manufacture.`;
+    open.hidden = true;
+    button.disabled = false;
+  }
+
+  async function manufacture() {
+    const mine = ++token;
+    if (installed.length) {
+      seed = randomSeed();
+      installed = [];
+      show(true);
+      await wait(500);
+    }
+    button.disabled = true;
+    open.hidden = true;
+    const run = packagingRun(seed);
+    for (const id of run) {
+      if (mine !== token) return;
+      installed = [...installed, id];
+      const view = show();
+      status.textContent = view.venture.events.find((e) => e.kind === "installed")?.text ?? "";
+      await wait(520);
+    }
+    if (mine !== token) return;
+    const view = show();
+    status.textContent = `${view.identity.name} is ready for market.`;
+    button.disabled = false;
+    open.hidden = false;
+  }
+
+  root.querySelectorAll<HTMLButtonElement>("[data-chip]").forEach((b) => b.addEventListener("click", () => select(b.dataset.chip!)));
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    void manufacture();
+  });
+
+  open.addEventListener("click", (e) => {
+    e.preventDefault();
+    const now = Date.now();
+    let id = "";
+    commit((p) => {
+      const created = createVenture(p, substrateId, seed, now);
+      let next = created.portfolio;
+      id = created.venture.id;
+      for (const m of installed) {
+        const v = findVenture(next, id)!;
+        if (canInstall(v, m).ok) next = installEnhancement(next, id, m, now);
+      }
+      return next;
+    });
+    window.location.href = ventureUrl(id);
+  });
+</script>

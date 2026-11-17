@@ -1,0 +1,40 @@
+---
+import { SHELF, showcase } from "../../lib/generation/showcase";
+import { renderCarton } from "../../lib/ui/carton";
+import { renderShelfLabel } from "../../lib/ui/labels";
+import { lowerFirst } from "../../lib/format";
+
+const views = SHELF.map((s) => showcase(s.substrateId, s.seed, s.installs));
+---
+
+<section id="shelf" aria-labelledby="shelf-title" class="scroll-mt-16 py-20 lg:py-28">
+  <div class="mx-auto max-w-[1320px] px-5 lg:px-8">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+      <h2 id="shelf-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">Fresh off the line.</h2>
+      <p class="max-w-[52ch] text-lg leading-snug text-ink-2 lg:justify-self-end">
+        Companies manufactured on YAAT this month, from technologies most teams already run. Each one ships with its own brand, market, agents, and price.
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-14 overflow-x-auto pb-4 [scrollbar-width:thin]" tabindex="0" role="region" aria-label="Featured companies">
+    <ul class="mx-auto flex w-max min-w-full max-w-[1320px] items-stretch gap-0 px-5 lg:w-auto lg:px-8">
+      {
+        views.map((v) => (
+          <li class="flex w-[220px] min-w-0 shrink-0 flex-col lg:w-auto lg:flex-1">
+            <div class="flex h-[300px] items-end justify-center px-3">
+              <Fragment set:html={renderCarton(v, { size: "shelf" })} />
+            </div>
+            <div class="h-3 bg-ink" aria-hidden="true" />
+            <div class="flex flex-1 flex-col gap-2 bg-[#d9dce3] px-2.5 pt-2.5 pb-4">
+              <Fragment set:html={renderShelfLabel(v, { compact: true })} />
+              <p class="px-0.5 text-xs leading-snug text-ink-2">
+                Made from <span class="font-semibold text-ink">{lowerFirst(v.substrate.name)}</span>
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

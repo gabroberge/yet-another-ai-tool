@@ -1,0 +1,63 @@
+---
+import Base from "./Base.astro";
+import Logo from "../components/Logo.astro";
+import { ROUTES } from "../lib/ui/paths";
+
+interface Props {
+  title: string;
+  current: "factory" | "portfolio" | "telemetry";
+}
+
+const { title, current } = Astro.props;
+const nav = [
+  { id: "factory", label: "Factory", href: ROUTES.factory },
+  { id: "portfolio", label: "Portfolio", href: ROUTES.portfolio },
+  { id: "telemetry", label: "Telemetry", href: ROUTES.telemetry },
+] as const;
+---
+
+<Base title={`${title} · YAAT™`}>
+  <header class="sticky top-0 z-30 border-b border-ink bg-paper">
+    <div class="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-4 sm:gap-8 lg:px-6">
+      <Logo href={ROUTES.home} />
+      <nav aria-label="Workspace" class="flex h-full items-stretch">
+        {
+          nav.map((n) => (
+            <a
+              href={n.href}
+              aria-current={n.id === current ? "page" : undefined}
+              class="flex items-center border-b-[3px] border-transparent px-2.5 pt-[3px] text-sm font-semibold text-ink-2 no-underline transition-colors hover:text-ink aria-[current=page]:border-ultra aria-[current=page]:text-ink sm:px-3.5"
+            >
+              {n.label}
+            </a>
+          ))
+        }
+      </nav>
+      <p class="ml-auto hidden text-right text-xs leading-tight text-ink-2 md:block" data-portfolio-summary aria-live="polite"></p>
+    </div>
+  </header>
+  <main id="main" class="min-h-[calc(100dvh-3.5rem)]">
+    <slot />
+  </main>
+  <div class="sr-only" aria-live="polite" data-announcer></div>
+</Base>
+
+<script>
+  import { getPortfolio, subscribe } from "../lib/persistence/store";
+  import { describeVenture } from "../lib/domain/view";
+  import { money, plural } from "../lib/format";
+
+  const el = document.querySelector<HTMLElement>("[data-portfolio-summary]");
+  function paint() {
+    if (!el) return;
+    const p = getPortfolio();
+    if (!p.ventures.length) {
+      el.textContent = "";
+      return;
+    }
+    const total = p.ventures.reduce((s, v) => s + describeVenture(v).valuation, 0);
+    el.innerHTML = `<span class="font-bold text-ink">${plural(p.ventures.length, "company", "companies")}</span><br />${money(total)} combined valuation`;
+  }
+  paint();
+  subscribe(paint);
+</script>

@@ -1,0 +1,88 @@
+---
+import { ENHANCEMENTS } from "../../lib/domain/enhancements";
+import { SUBSTRATES } from "../../lib/domain/substrates";
+
+const ingredients = [
+  "brand identity",
+  "category definition",
+  "positioning",
+  "specialized AI agents",
+  "orchestration mesh",
+  "reasoning engine",
+  "persistent memory",
+  "confidence scoring",
+  "human-in-the-loop review",
+  "governance fabric",
+  "proprietary index",
+  "enterprise pricing",
+  "launch announcement",
+  "agent skill file",
+  "investor memo",
+  "trust center",
+];
+
+const directions = [
+  { title: "Choose a technology", body: "Pick any capability your team already runs: an API, a library, an algorithm, a service." },
+  { title: "Manufacture", body: "YAAT names it, positions it, and staffs it with agents in a single pass." },
+  { title: "Add layers until it sells", body: "Governance, differentiation, go-to-market. Every module moves the price, and the valuation with it." },
+];
+
+const facts = [
+  { k: "Agents", v: "Up to 8" },
+  { k: "Platform modules", v: String(ENHANCEMENTS.length) },
+  { k: "Launch artifacts", v: "5" },
+  { k: "Technologies supported", v: String(SUBSTRATES.length) },
+  { k: "Time to manufacture", v: "1 click" },
+  { k: "Migration effort", v: "None" },
+];
+---
+
+<section aria-labelledby="box-title" class="bg-ultra py-20 text-white lg:py-28">
+  <div class="mx-auto max-w-[1320px] px-5 lg:px-8">
+    <h2 id="box-title" class="max-w-[18ch] text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">
+      Everything a company needs, in one box.
+    </h2>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_20rem] lg:gap-14">
+      <div>
+        <h3 class="border-b border-white/40 pb-2 text-sm font-bold">Directions</h3>
+        <ol class="mt-2">
+          {
+            directions.map((d, i) => (
+              <li class="grid grid-cols-[2.75rem_1fr] gap-3 border-b border-white/20 py-5">
+                <span class="text-3xl leading-none font-black tabular wide">{i + 1}</span>
+                <span>
+                  <span class="block text-lg font-bold">{d.title}</span>
+                  <span class="mt-1 block max-w-[40ch] text-white/80">{d.body}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div>
+        <h3 class="border-b border-white/40 pb-2 text-sm font-bold">Ingredients</h3>
+        <p class="mt-5 text-lg leading-relaxed text-white/90">
+          <Fragment set:html={ingredients.map((x, i) => (i % 4 === 3 ? `<strong class="font-extrabold text-white">${x}</strong>` : x)).join(", ") + "."} />
+        </p>
+        <p class="mt-6 text-sm text-white/70">Manufactured on demand from the technology you supply. Contents vary by company.</p>
+      </div>
+
+      <div class="self-start bg-paper p-4 text-ink">
+        <p class="border-b-[6px] border-ink pb-1 text-3xl leading-none font-black tracking-tight narrow">Platform facts</p>
+        <p class="border-b-2 border-ink py-1.5 text-xs"><span class="font-semibold">Serving size</span> 1 company</p>
+        <dl class="text-[13px]">
+          {
+            facts.map((f) => (
+              <div class="flex justify-between gap-4 border-b border-ink/25 py-1.5">
+                <dt class="text-ink-2">{f.k}</dt>
+                <dd class="font-bold tabular">{f.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

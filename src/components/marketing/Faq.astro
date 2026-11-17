@@ -1,0 +1,49 @@
+---
+import { icon } from "../../lib/ui/icons";
+
+const FAQ = [
+  {
+    q: "What counts as a technology?",
+    a: "Anything with a defined function: an API, a library, an algorithm, a service, a developer tool, or a command-line utility. If it does one thing reliably, it can anchor a company.",
+  },
+  {
+    q: "Do I need to change my existing code?",
+    a: "No. YAAT builds above your foundation and never modifies it. Every layer can be added or removed without touching what is underneath.",
+  },
+  {
+    q: "How is valuation calculated?",
+    a: "Each module carries a multiplier calibrated against comparable AI-native companies. Valuation, price, category, and stage update the moment you install or remove one.",
+  },
+  {
+    q: "Can I run more than one company?",
+    a: "Yes. Each company is independent, with its own brand, market, architecture, and artifacts. Your portfolio view and telemetry aggregate all of them.",
+  },
+  {
+    q: "Where is my portfolio stored?",
+    a: "In your browser. Nothing is sent to a server, and your companies are still there when you come back.",
+  },
+  {
+    q: "What do I get at launch?",
+    a: "A launch announcement, an agent skill file, an investor memo, a Trust Center, and an architecture specification, all generated from the company you built.",
+  },
+];
+---
+
+<section id="faq" aria-labelledby="faq-title" class="scroll-mt-16 bg-paper py-20 lg:py-28">
+  <div class="mx-auto grid max-w-[1320px] gap-10 px-5 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-8">
+    <h2 id="faq-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">Questions.</h2>
+    <div class="border-t border-ink">
+      {
+        FAQ.map((f) => (
+          <details class="group border-b border-rule">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-bold [&::-webkit-details-marker]:hidden">
+              {f.q}
+              <Fragment set:html={icon("plus", "size-5 shrink-0 transition-transform duration-200 group-open:rotate-45")} />
+            </summary>
+            <p class="max-w-[62ch] pb-6 text-ink-2">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

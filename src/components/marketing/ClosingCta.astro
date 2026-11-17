@@ -1,0 +1,19 @@
+---
+import { ROUTES } from "../../lib/ui/paths";
+---
+
+<section aria-labelledby="cta-title" class="bg-ink py-20 text-white lg:py-28">
+  <div class="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+    <h2 id="cta-title" class="max-w-[16ch] text-[clamp(2.5rem,5vw,4.75rem)] leading-[0.92] font-black tracking-[-0.03em] wide">
+      Your next company is already installed.
+    </h2>
+    <div class="flex flex-col items-start gap-4">
+      <a
+        href={ROUTES.factory}
+        class="inline-flex h-14 items-center bg-seal px-7 text-lg font-extrabold text-ink no-underline semiwide transition-colors hover:bg-white"
+        >Open the Factory</a
+      >
+      <p class="text-sm text-white/60">Free to start. No account required.</p>
+    </div>
+  </div>
+</section>

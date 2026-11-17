@@ -1,6 +1,6 @@
 {
   "name": "yet-another-ai-tool",
-  "description": "Satirical AI-native product factory. Compiles a working utility into a category, an architecture, and a price. The substrate stays frozen.",
+  "description": "Satirical AI startup factory. Turns technology that already works into a company with a category, agents, a price, and a valuation.",
   "type": "module",
   "version": "0.0.1",
   "license": "MIT",
@@ -32,6 +32,8 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.12",
     "tailwindcss": "^4.3.5"

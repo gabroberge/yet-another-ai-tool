@@ -1,0 +1,58 @@
+---
+import { SHELF, showcase } from "../../lib/generation/showcase";
+import { money } from "../../lib/format";
+import { renderCarton } from "../../lib/ui/carton";
+
+const pick = (i: number) => showcase(SHELF[i]!.substrateId, SHELF[i]!.seed, SHELF[i]!.installs);
+const [a, b, c] = [pick(0), pick(3), pick(1)];
+
+const quotes = [
+  {
+    view: a,
+    text: `We had ${a.substrate.short}. Six weeks later we had a category, an index, and a term sheet.`,
+    person: "Dana Whitfield",
+    role: `Founder and CEO, ${a.identity.name}`,
+  },
+  {
+    view: b,
+    text: "Procurement asked for our governance model. We sent them a link to the Trust Center and they signed the same week.",
+    person: "Marcus Oyelaran",
+    role: `Chief Revenue Officer, ${b.identity.name}`,
+  },
+  {
+    view: c,
+    text: "Our board stopped asking what the product does. They ask how many agents we have now.",
+    person: "Priya Raman",
+    role: `Co-founder, ${c.identity.name}`,
+  },
+];
+---
+
+<section aria-labelledby="quotes-title" class="py-20 lg:py-28">
+  <div class="mx-auto max-w-[1320px] px-5 lg:px-8">
+    <h2 id="quotes-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">Founders on YAAT.</h2>
+    <div class="mt-14 grid gap-x-12 gap-y-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <figure class="grid gap-8 border-t-[6px] border-ink pt-8 sm:grid-cols-[auto_1fr] lg:row-span-2">
+        <div class="flex items-end"><Fragment set:html={renderCarton(quotes[0]!.view, { size: "shelf" })} /></div>
+        <div class="flex flex-col justify-between gap-8">
+          <blockquote class="text-[clamp(1.6rem,2.6vw,2.4rem)] leading-[1.1] font-extrabold tracking-[-0.015em] semiwide">“{quotes[0]!.text}”</blockquote>
+          <figcaption class="flex flex-wrap items-end justify-between gap-4 text-sm">
+            <span><span class="block font-bold">{quotes[0]!.person}</span><span class="text-ink-2">{quotes[0]!.role}</span></span>
+            <span class="text-right"><span class="block text-xs text-ink-2">Valuation</span><span class="text-lg font-black tabular">{money(quotes[0]!.view.valuation)}</span></span>
+          </figcaption>
+        </div>
+      </figure>
+      {
+        quotes.slice(1).map((q) => (
+          <figure class="border-t border-ink pt-6">
+            <blockquote class="text-xl leading-snug font-semibold">“{q.text}”</blockquote>
+            <figcaption class="mt-5 flex items-center gap-3 text-sm">
+              <span class="size-6 shrink-0" style={`background:${q.view.identity.color.bg}`} aria-hidden="true" />
+              <span><span class="font-bold">{q.person}</span>, <span class="text-ink-2">{q.role}</span></span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

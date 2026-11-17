@@ -1,0 +1,57 @@
+---
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource-variable/jetbrains-mono";
+import "../styles/global.css";
+import { withBase } from "../lib/ui/paths";
+
+interface Props {
+  title: string;
+  description?: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description = "YAAT turns the technology you already run into AI-native companies: name, category, agents, governance, pricing, and a valuation, in one click.",
+  bodyClass = "",
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
+    <meta name="theme-color" content="#3a2bff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+      >Skip to content</a
+    >
+    <slot />
+    <script>
+      import { fitClaims } from "../lib/ui/carton-dom";
+
+      let pending = 0;
+      const fit = () => {
+        cancelAnimationFrame(pending);
+        pending = requestAnimationFrame(() => fitClaims());
+      };
+      fit();
+      void document.fonts?.ready.then(fit);
+      window.addEventListener("resize", fit);
+    </script>
+  </body>
+</html>

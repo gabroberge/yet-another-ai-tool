@@ -1,0 +1,51 @@
+---
+import Logo from "./Logo.astro";
+import { ROUTES } from "../lib/ui/paths";
+
+const cols = [
+  {
+    title: "Product",
+    links: [
+      { label: "Factory", href: ROUTES.factory },
+      { label: "Portfolio", href: ROUTES.portfolio },
+      { label: "Telemetry", href: ROUTES.telemetry },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "How it works", href: `${ROUTES.home}#line` },
+      { label: "Pricing", href: `${ROUTES.home}#pricing` },
+      { label: "Trust", href: `${ROUTES.home}#trust` },
+    ],
+  },
+];
+---
+
+<footer class="border-t border-rule bg-board">
+  <div class="mx-auto grid max-w-[1320px] gap-10 px-5 py-14 sm:grid-cols-[1fr_auto_auto] sm:gap-16 lg:px-8">
+    <div>
+      <Logo href={ROUTES.home} />
+      <p class="mt-4 max-w-[36ch] text-sm text-ink-2">Yet Another AI Tool. AI-native companies, manufactured from the technology you already run.</p>
+    </div>
+    {
+      cols.map((c) => (
+        <nav aria-label={c.title}>
+          <p class="text-sm font-bold">{c.title}</p>
+          <ul class="mt-3 space-y-2 text-sm text-ink-2">
+            {c.links.map((l) => (
+              <li>
+                <a href={l.href} class="no-underline hover:text-ink">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+  <div class="border-t border-rule">
+    <p class="mx-auto max-w-[1320px] px-5 py-5 text-xs text-ink-3 lg:px-8">© 2026 YAAT, Inc. Yet Another AI Tool is a trademark of YAAT, Inc.</p>
+  </div>
+</footer>

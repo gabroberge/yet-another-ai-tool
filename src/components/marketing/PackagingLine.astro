@@ -1,0 +1,219 @@
+---
+import { describeVenture } from "../../lib/domain/view";
+import { buildVenture } from "../../lib/generation/showcase";
+import { VOICES } from "../../lib/generation/identity";
+import { renderCarton } from "../../lib/ui/carton";
+import { renderContents } from "../../lib/ui/labels";
+import { money, price, latency } from "../../lib/format";
+import { icon } from "../../lib/ui/icons";
+
+const SUBSTRATE = "text-diff";
+const SEED = 17;
+const staff = ["agent", "agent", "agent", "orchestrator", "reasoning"];
+const govern = [...staff, "confidence", "hitl", "governance", "compliance"];
+const launch = [...govern, "category", "score", "enterprise", "dashboard"];
+
+const STATIONS = [
+  { id: "intake", title: "Intake", installs: [] as string[], headline: "Bring any technology.", body: "An API, a library, an algorithm, a scheduled job. YAAT reads what it does and maps the market around it." },
+  { id: "brand", title: "Brand", installs: [] as string[], headline: "A company, not a feature.", body: "Name, mark, colorway, voice, and category. Every company leaves the line with an identity of its own." },
+  { id: "staff", title: "Staff", installs: staff, headline: "Agents with job titles.", body: "Specialized agents, each with a name and a role, coordinated by an orchestration mesh and a reasoning engine." },
+  { id: "govern", title: "Govern", installs: govern, headline: "Ready for procurement.", body: "Confidence scoring, human review, policy enforcement, and an audit trail, before the first security questionnaire arrives." },
+  { id: "launch", title: "Launch", installs: launch, headline: "On the shelf.", body: "Category, proprietary index, enterprise pricing, and a valuation, with launch materials already written." },
+];
+
+const views = STATIONS.map((s) => describeVenture(buildVenture(SUBSTRATE, SEED, s.installs)));
+const [intake, brand, staffed, governed, launched] = views as [ReturnType<typeof describeVenture>, ...ReturnType<typeof describeVenture>[]];
+const governanceLayers = governed!.layers.filter((l) => l.tier === "governance");
+const stationData = STATIONS.map((s) => ({ id: s.id, installs: s.installs }));
+---
+
+<section id="line" aria-labelledby="line-title" class="scroll-mt-16 bg-paper py-20 lg:py-28" data-line data-substrate={SUBSTRATE} data-seed={SEED}>
+  <div class="mx-auto max-w-[1320px] px-5 lg:px-8">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+      <h2 id="line-title" class="text-[clamp(2.25rem,4vw,3.75rem)] leading-[0.95] font-black tracking-[-0.025em] wide">One line. Five stations.</h2>
+      <p class="max-w-[52ch] text-lg leading-snug text-ink-2 lg:justify-self-end">
+        Follow {launched!.identity.name} from {intake!.substrate.short} to a {launched!.stage.label} company. Every station adds something you can price.
+      </p>
+    </div>
+
+    <div class="mt-12">
+      <div class="relative">
+        <div class="absolute inset-x-0 top-[22px] h-[3px] bg-[repeating-linear-gradient(90deg,var(--color-ink)_0_14px,transparent_14px_22px)]" aria-hidden="true"></div>
+        <div role="tablist" aria-label="Packaging stations" class="relative grid grid-cols-5 gap-2">
+          {
+            STATIONS.map((s, i) => (
+              <button
+                role="tab"
+                id={`station-tab-${s.id}`}
+                aria-controls={`station-panel-${s.id}`}
+                aria-selected={i === 4 ? "true" : "false"}
+                tabindex={i === 4 ? 0 : -1}
+                data-station={i}
+                class="group flex flex-col items-center gap-2 text-center"
+              >
+                <span class="grid size-11 place-items-center border-2 border-ink bg-paper text-sm font-black tabular transition-colors group-aria-selected:bg-ultra group-aria-selected:border-ultra group-aria-selected:text-white group-hover:bg-board group-aria-selected:group-hover:bg-ultra">
+                  {i + 1}
+                </span>
+                <span class="text-xs font-bold sm:text-sm">{s.title}</span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+        <div class="relative flex min-h-[460px] items-end justify-center bg-board px-6 pt-10 pb-0">
+          <div data-line-contents class="absolute inset-x-6 top-8 mx-auto max-w-[340px]" hidden>
+            <Fragment set:html={renderContents(intake!.substrate)} />
+          </div>
+          <div data-line-carton data-claims={launched!.claims.map((c) => c.id).join("|")} class="relative flex items-end justify-center">
+            <Fragment set:html={renderCarton(launched!, { size: "stage" })} />
+          </div>
+          <div class="absolute inset-x-0 bottom-0 h-3 bg-ink" aria-hidden="true"></div>
+        </div>
+
+        <div>
+          {
+            STATIONS.map((s, i) => (
+              <div role="tabpanel" id={`station-panel-${s.id}`} aria-labelledby={`station-tab-${s.id}`} hidden={i !== 4} data-panel={i} tabindex="0">
+                <h3 class="text-3xl font-black tracking-tight semiwide">{s.headline}</h3>
+                <p class="mt-3 max-w-[48ch] text-lg leading-snug text-ink-2">{s.body}</p>
+                <div class="mt-8 text-sm">
+                  {s.id === "intake" && (
+                    <dl class="divide-y divide-rule border-y border-rule">
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Technology</dt><dd class="font-semibold">{intake!.substrate.name}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Function</dt><dd>{intake!.substrate.does}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Market found</dt><dd>{intake!.substrate.domain.industry}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Addressable market</dt><dd class="font-semibold tabular">${intake!.substrate.domain.tamBillions}B</dd></div>
+                    </dl>
+                  )}
+                  {s.id === "brand" && (
+                    <dl class="divide-y divide-rule border-y border-rule">
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Name</dt><dd class="font-extrabold semiwide">{brand!.identity.name}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Tagline</dt><dd>{brand!.tagline}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Voice</dt><dd>{VOICES[brand!.identity.voice].label}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] gap-4 py-3"><dt class="text-ink-2">Category</dt><dd>{brand!.category}</dd></div>
+                      <div class="grid grid-cols-[9rem_1fr] items-center gap-4 py-3">
+                        <dt class="text-ink-2">Colorway</dt>
+                        <dd class="flex items-center gap-2"><span class="size-5" style={`background:${brand!.identity.color.bg}`} />{brand!.identity.color.id}</dd>
+                      </div>
+                    </dl>
+                  )}
+                  {s.id === "staff" && (
+                    <ul class="divide-y divide-rule border-y border-rule">
+                      {staffed!.agents.map((a) => (
+                        <li class="flex justify-between gap-4 py-3"><span class="font-semibold">{a.name}</span><span class="text-right text-ink-2">{a.role}</span></li>
+                      ))}
+                      {staffed!.layers.filter((l) => l.tier === "orchestration" || l.tier === "intelligence").map((l) => (
+                        <li class="flex justify-between gap-4 py-3"><span class="font-semibold">{l.name}</span><span class="text-right text-ink-2">{l.detail}</span></li>
+                      ))}
+                    </ul>
+                  )}
+                  {s.id === "govern" && (
+                    <ul class="divide-y divide-rule border-y border-rule">
+                      <li class="flex justify-between gap-4 py-3"><span class="font-semibold">Confidence</span><span class="tabular">{governed!.confidence?.toFixed(1)}%</span></li>
+                      {governanceLayers.map((l) => (
+                        <li class="flex justify-between gap-4 py-3"><span class="font-semibold">{l.name}</span><span class="text-right text-ink-2">{l.detail}</span></li>
+                      ))}
+                    </ul>
+                  )}
+                  {s.id === "launch" && (
+                    <div class="grid gap-6">
+                      <div class="grid grid-cols-3 border-y border-ink">
+                        {launched!.pricing.tiers.map((t) => (
+                          <div class="border-r border-rule px-3 py-3 last:border-r-0">
+                            <p class="text-xs text-ink-2">{t.name}</p>
+                            <p class="mt-1 text-xl font-black tabular semiwide">{t.price === null ? "Contact sales" : price(t.price)}</p>
+                            <p class="text-[11px] text-ink-2">{t.unit}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <dl class="grid grid-cols-3 gap-4">
+                        <div><dt class="text-xs text-ink-2">Valuation</dt><dd class="text-2xl font-black tabular semiwide">{money(launched!.valuation)}</dd></div>
+                        <div><dt class="text-xs text-ink-2">Stage</dt><dd class="text-2xl font-black semiwide">{launched!.stage.label}</dd></div>
+                        <div><dt class="text-xs text-ink-2">{launched!.index?.abbr ?? "Index"}</dt><dd class="text-2xl font-black tabular semiwide">{launched!.index?.value ?? "—"}</dd></div>
+                      </dl>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          }
+          <div class="mt-8 flex items-center gap-4">
+            <button type="button" data-line-play class="inline-flex h-11 items-center gap-2 border-2 border-ink px-4 text-sm font-bold transition-colors hover:bg-ink hover:text-white">
+              <Fragment set:html={icon("play", "size-4")} />
+              Run the line
+            </button>
+            <p class="text-sm text-ink-2 tabular" data-line-meta>{latency(launched!.latencyMs)} per request, {launched!.layers.length} layers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-line-stations set:html={JSON.stringify(stationData)} />
+</section>
+
+<script>
+  import { describeVenture } from "../../lib/domain/view";
+  import { buildVenture } from "../../lib/generation/showcase";
+  import { updateCarton } from "../../lib/ui/carton-dom";
+  import { latency } from "../../lib/format";
+  import { wait } from "../../lib/ui/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-line]")!;
+  const stations = JSON.parse(root.querySelector("[data-line-stations]")!.textContent!) as { id: string; installs: string[] }[];
+  const tabs = [...root.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+  const panels = [...root.querySelectorAll<HTMLElement>("[data-panel]")];
+  const carton = root.querySelector<HTMLElement>("[data-line-carton]")!;
+  const contents = root.querySelector<HTMLElement>("[data-line-contents]")!;
+  const meta = root.querySelector<HTMLElement>("[data-line-meta]")!;
+  const play = root.querySelector<HTMLButtonElement>("[data-line-play]")!;
+  const substrate = root.dataset.substrate!;
+  const seed = Number(root.dataset.seed);
+  let current = 4;
+  let run = 0;
+
+  function select(i: number, focus = false) {
+    const wasIntake = current === 0;
+    current = i;
+    tabs.forEach((t, j) => {
+      t.setAttribute("aria-selected", String(j === i));
+      t.tabIndex = j === i ? 0 : -1;
+    });
+    panels.forEach((p, j) => (p.hidden = j !== i));
+    if (focus) tabs[i]!.focus();
+    const view = describeVenture(buildVenture(substrate, seed, stations[i]!.installs));
+    contents.hidden = i !== 0;
+    carton.hidden = i === 0;
+    if (i !== 0) updateCarton(carton, view, { size: "stage" }, wasIntake);
+    meta.textContent = `${latency(view.latencyMs)} per request, ${view.layers.length} ${view.layers.length === 1 ? "layer" : "layers"}`;
+  }
+
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => {
+      run++;
+      select(i);
+    });
+    t.addEventListener("keydown", (e) => {
+      const keys: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1 };
+      if (e.key in keys) {
+        e.preventDefault();
+        run++;
+        select((i + keys[e.key]! + tabs.length) % tabs.length, true);
+      } else if (e.key === "Home" || e.key === "End") {
+        e.preventDefault();
+        run++;
+        select(e.key === "Home" ? 0 : tabs.length - 1, true);
+      }
+    });
+  });
+
+  play.addEventListener("click", async () => {
+    const mine = ++run;
+    for (let i = 0; i < stations.length; i++) {
+      if (mine !== run) return;
+      select(i);
+      await wait(1300);
+    }
+  });
+</script>
